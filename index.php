@@ -11,13 +11,13 @@ $dotenv->load();
 try{
 $test = \Cabez\TitanOrm\Database\Conection::getConnection();
 
-/*$sql = "SELECT * FROM User";
+$sql = "SELECT * FROM User";
 
 
 $consulta = $test->query($sql);
 $consulta->execute();
 $dtos = $consulta->fetchAll(PDO::FETCH_OBJ);
-var_dump($dtos);*/
+var_dump($dtos);
 
 }catch (Exception $e){
     

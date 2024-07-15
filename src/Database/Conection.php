@@ -14,7 +14,7 @@ class Conection
 
     }
 
-    public static function getConnection()
+    public static function getConnection(): PDO
     {
         $db_user = $_ENV['DB_USER'];
         $db_password = $_ENV['DB_PASSWORD'];
@@ -27,7 +27,7 @@ class Conection
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
         try {
-            $dsn = AdapterConection::getDriveConection();
+            $dsn = DataBaseFactory::getDriveConection();
             self::$conn = new PDO($dsn, $db_user, $db_password, $optionsConfig);
         } catch (\Exception $e) {
             throw new Exception("Error in th connection database " . $e->getMessage());

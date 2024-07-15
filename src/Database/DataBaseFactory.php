@@ -2,7 +2,7 @@
 
 namespace Cabez\TitanOrm\Database;
 
-class AdapterConection
+class DataBaseFactory
 {
 
     public static function getDriveConection(): string
