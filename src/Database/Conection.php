@@ -14,6 +14,7 @@ class Conection
 
     }
 
+
     public static function getConnection(): PDO
     {
         $db_user = $_ENV['DB_USER'];
