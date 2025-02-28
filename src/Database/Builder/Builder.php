@@ -1,7 +1,7 @@
 <?php
 namespace Cabez\TitanOrm\Database\Builder;
 
-use Cabez\TitanOrm\Database\Conection as Connection;
+use Cabez\TitanOrm\Database\Connection;
 use PDO;
 
 use Cabez\TitanOrm\Database\Interfaces\IBuilder;
