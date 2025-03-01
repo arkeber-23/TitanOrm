@@ -2,12 +2,13 @@
 namespace Cabez\TitanOrm\Database\Attributes\Relations;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class ForeignKey
+class ManyToMany
 {
     public function __construct(
-        public string $references,      
+        public string $targetEntity,   
         public ?string $onDelete = 'CASCADE',
         public ?string $onUpdate = 'CASCADE',
-        public int $order = 999
+        public ?string $nameRelation = null,
+        public bool $nullable = false
     ) {}
 } 

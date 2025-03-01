@@ -59,7 +59,8 @@ class DataBaseFactory
         return match ($driver) {
             self::MYSQL => 'INT AUTO_INCREMENT ',
             self::PGSQL => 'BIGSERIAL PRIMARY KEY ',
-            self::SQLITE => 'INTEGER PRIMARY KEY AUTOINCREMENT ',    
+            self::SQLITE => 'INTEGER PRIMARY KEY AUTOINCREMENT ',  
+            self::SQLSRV => 'BIGINT IDENTITY(1,1) PRIMARY KEY ',  
             default => throw new \InvalidArgumentException("Driver no soportado: {$driver}"),
         };
     }

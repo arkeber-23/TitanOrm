@@ -1,24 +1,22 @@
 <?php
+
 namespace Cabez\TitanOrm\Models;
 
-use Cabez\TitanOrm\Database\Model;
-use Cabez\TitanOrm\Database\Attributes\Column;
-use Cabez\TitanOrm\Interfaces\TypeData;
+use Cabez\TitanOrm\Database\Attributes\Entity;
 use Cabez\TitanOrm\Database\Attributes\PrimaryKey;
-class Persona extends Model
+use Cabez\TitanOrm\Database\Attributes\Column;
+use Cabez\TitanOrm\Database\Migrations\Migration;
+use Cabez\TitanOrm\Interfaces\TypeData;
+
+#[Entity(name: 'personas')]
+class Persona extends Migration
 {
-    #[PrimaryKey(order: 1)]
-    protected int $id;
-   #[Column(TypeData::VARCHAR,name: "nombre_persona", length: 150, order: 2)]
-   protected string $nombre;
-   #[Column(TypeData::VARCHAR, length: 100,  order: 3)]
-   protected string $apellido;
-   #[Column(TypeData::VARCHAR, length: 100,  order: 4)]
-   protected string $email;
-   #[Column(TypeData::VARCHAR, length: 100,  order: 5)]
-   protected string $telefono;
-   #[Column(TypeData::VARCHAR, length: 100,  order: 6)]
-   protected string $direccion;
-   #[Column(TypeData::VARCHAR, length: 100, order: 7)]
-   protected string $ciudad;
+    #[PrimaryKey(name: 'id')]
+    public int $id;
+
+    #[Column(type:TypeData::VARCHAR,name: 'name_person',nullable: true,length: 50,order: 2)]
+    public string $name;    
+
+    #[Column(type:TypeData::VARCHAR,name: 'last_name',nullable: true,length: 50,order: 3)]
+    public string $lastName;    
 }

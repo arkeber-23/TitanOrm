@@ -1,6 +1,6 @@
 {
     "name": "cabez/titan-orm",
-    "type": "project",
+    "type": "library",
     "license": "mit",
     "autoload": {
         "psr-4": {
