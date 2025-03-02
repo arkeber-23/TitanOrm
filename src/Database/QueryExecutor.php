@@ -92,6 +92,10 @@ class QueryExecutor implements IQueryExecutor
             );
         }
 
+        $oneToOne = $property->getAttributes(OneToOne::class);
+        if (!empty($oneToOne)) {
+            return $this->handleOneToOneRelation($property, $oneToOne[0]->newInstance());
+        }
 
         $column = $property->getAttributes(Column::class);
         if (empty($column)) {
@@ -125,6 +129,7 @@ class QueryExecutor implements IQueryExecutor
                 if ($columnAttr->unique) {
                     $indexName = "{$tableName}_{$property->getName()}_unique";
                     $query = "CREATE UNIQUE INDEX IF NOT EXISTS {$indexName} ON {$tableName} ({$property->getName()})";
+
                     $this->connection->exec($query);
                 }
             }
@@ -152,53 +157,6 @@ class QueryExecutor implements IQueryExecutor
         $this->connection->exec($query);
     }
 
-    private function createRelationTables(string $className): void
-    {
-        $reflection = new ReflectionClass($className);
-
-        foreach ($reflection->getProperties() as $property) {
-            $manyToMany = $property->getAttributes(ManyToOne::class);
-            if (!empty($manyToMany)) {
-                $this->createManyToManyTable($className, $property, $manyToMany[0]->newInstance());
-            }
-        }
-    }
-
-    private function createManyToManyTable(string $sourceClass, ReflectionProperty $property, ManyToOne $relation): void
-    {
-        $sourceTable = (new ReflectionClass($sourceClass))->getMethod('getTableName')->invoke(null);
-        $targetTable = (new ReflectionClass($relation->targetEntity))->getMethod('getTableName')->invoke(null);
-
-        $tableName = "{$sourceTable}_{$targetTable}";
-
-        $query = "CREATE TABLE IF NOT EXISTS {$tableName} (
-        id BIGSERIAL PRIMARY KEY,
-        {$sourceTable}_id INTEGER REFERENCES {$sourceTable}(id) ON DELETE CASCADE,
-        {$targetTable}_id INTEGER REFERENCES {$targetTable}(id) ON DELETE CASCADE
-    )";
-        $this->connection->exec($query);
-    }
-
-
-    private function handleManyToOneRelation(ReflectionProperty $property, ManyToOne $relation): ?string
-    {
-        $targetClass = new ReflectionClass($relation->targetEntity);
-        $targetTable = $targetClass->getMethod('getTableName')->invoke(null);
-
-        $foreignKeyName = $property->getName() . '_id';
-
-        return sprintf(
-            "%s INTEGER%s REFERENCES %s(%s) ON DELETE %s ON UPDATE %s",
-            $foreignKeyName,
-            $relation->nullable ? '' : ' NOT NULL',
-            $targetTable,
-            $relation->nameRelation ?? 'id',
-            $relation->onDelete ?? 'CASCADE',
-            $relation->onUpdate ?? 'CASCADE'
-        );
-    }
-
-
     public function createTable(string $className): void
     {
         $reflection = new ReflectionClass($className);
@@ -209,25 +167,115 @@ class QueryExecutor implements IQueryExecutor
 
         if (!empty($namesEntity)) {
             $classAttr = $namesEntity[0]->newInstance();
-            $tableName = $classAttr->name??"";
-            $schema = $classAttr->schema??"";
+            $tableName = $classAttr->name ?? "";
+            $schema = $classAttr->schema ?? "";
         }
 
         $columns = $this->getColumnDefinitions($reflection);
         $nameSchema = $schema ? "{$schema}." . $tableName : $tableName;
         $createSchema = $schema ? "CREATE SCHEMA IF NOT EXISTS {$schema};" : "";
 
-        $query = " {$createSchema} CREATE TABLE IF NOT EXISTS {$nameSchema} (\n" .
+        $query = "{$createSchema} CREATE TABLE IF NOT EXISTS {$nameSchema} (\n" .
             implode(",\n", $columns) .
-            "\n)";
+            "\n);\n\n";
 
-        //Ejecutar la consulta
-        $this->connection->exec($query);
+        $this->createFileMigration($query);
 
         // Crear índices únicos
         $this->createUniqueIndexes($tableName, $reflection);
 
-        // Crear tablas de relaciones
-        $this->createRelationTables($className);
+        // Crear tablas de relaciones solo si hay relaciones ManyToMany
+        $hasManyToMany = false;
+        foreach ($reflection->getProperties() as $property) {
+            if (!empty($property->getAttributes(ManyToMany::class))) {
+                $hasManyToMany = true;
+                break;
+            }
+        }
+
+        if ($hasManyToMany) {
+            $this->createRelationTables($className);
+        }
+    }
+
+    private function createRelationTables(string $className): void
+    {
+        $reflection = new ReflectionClass($className);
+        foreach ($reflection->getProperties() as $property) {
+            $manyToMany = $property->getAttributes(ManyToMany::class);
+            if (!empty($manyToMany)) {
+                $relation = $manyToMany[0]->newInstance();
+                // Solo crear la tabla de unión desde el lado propietario (el que tiene inversedBy)
+                if (isset($relation->inversedBy)) {
+                    $this->createManyToManyTable($className, $property, $relation);
+                }
+            }
+        }
+    }
+
+    private function createManyToManyTable(string $sourceClass, ReflectionProperty $property, ManyToMany $relation): void
+    {
+        $sourceTable = (new ReflectionClass($sourceClass))->getMethod('getTableName')->invoke(null);
+        $targetTable = (new ReflectionClass($relation->targetEntity))->getMethod('getTableName')->invoke(null);
+
+        $tableName = $relation->joinTable ?? "{$sourceTable}_{$targetTable}";
+        
+        $query = "CREATE TABLE IF NOT EXISTS {$tableName} (
+            id BIGSERIAL PRIMARY KEY,
+            {$sourceTable}_id INTEGER NOT NULL REFERENCES {$sourceTable}(id) ON DELETE CASCADE,
+            {$targetTable}_id INTEGER NOT NULL REFERENCES {$targetTable}(id) ON DELETE CASCADE,
+            UNIQUE({$sourceTable}_id, {$targetTable}_id)
+        );\n\n";
+
+        $this->createFileMigration($query);
+    }
+
+    private function handleOneToOneRelation(ReflectionProperty $property, OneToOne $relation): string
+    {
+        $targetClass = new ReflectionClass($relation->targetEntity);
+        $targetTable = $targetClass->getMethod('getTableName')->invoke(null);
+        
+        
+        $foreignKeyName = $property->getName() . '_id';
+
+        return sprintf(
+            "%s INTEGER%s REFERENCES %s(%s) ON DELETE %s ON UPDATE %s UNIQUE",
+            $foreignKeyName,
+            $relation->nullable ? '' : ' NOT NULL',
+            $targetTable,
+            $relation->nameRelation ?? 'id',
+            $relation->onDelete ?? 'CASCADE',
+            $relation->onUpdate ?? 'CASCADE'
+        );
+    }
+
+    private function handleManyToOneRelation(ReflectionProperty $property, ManyToOne $relation): string
+    {
+        $targetClass = new ReflectionClass($relation->targetEntity);
+        $targetTable = $targetClass->getMethod('getTableName')->invoke(null);
+        $nameEntity = $targetClass->getAttributes(Entity::class);
+        $propertyColumn = $property->getAttributes(Column::class);
+        $nameTable =  $nameEntity[0]->newInstance()->name??$targetTable;
+        $foreignKeyName = $propertyColumn[0]->newInstance()->name ??  $property->getName() . '_id';
+        return sprintf(
+            "%s INTEGER%s REFERENCES %s(%s) ON DELETE %s ON UPDATE %s",
+            $foreignKeyName,
+            $relation->nullable ? '' : ' NOT NULL',
+            $nameTable,
+            $relation->nameRelation ?? 'id',
+            $relation->onDelete ?? 'CASCADE',
+            $relation->onUpdate ?? 'CASCADE'
+        );
+    }
+
+    private function createFileMigration(string $query): void
+    {
+        $createFile = "./src/Database/SQL/migrations.sql";
+        if (!file_exists($createFile)) {
+            mkdir("./src/Database/SQL", 0777, true);
+        }
+        $file = fopen($createFile, "a");
+        fwrite($file, $query);
+        fclose($file);
     }
 }

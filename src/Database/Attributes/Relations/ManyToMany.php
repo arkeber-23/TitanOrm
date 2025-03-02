@@ -5,7 +5,10 @@ namespace Cabez\TitanOrm\Database\Attributes\Relations;
 class ManyToMany
 {
     public function __construct(
-        public string $targetEntity,   
+        public string $targetEntity,
+        public ?string $joinTable = null,
+        public ?string $inversedBy = null,
+        public ?string $mappedBy = null,
         public ?string $onDelete = 'CASCADE',
         public ?string $onUpdate = 'CASCADE',
         public ?string $nameRelation = null,

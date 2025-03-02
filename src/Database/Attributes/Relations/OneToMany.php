@@ -5,6 +5,11 @@ namespace Cabez\TitanOrm\Database\Attributes\Relations;
 class OneToMany
 {
     public function __construct(
-        public string $targetEntity,    
-        public string $mappedBy) {}
+        public string $targetEntity,
+        public string $mappedBy,
+        public ?string $onDelete = 'CASCADE',
+        public ?string $onUpdate = 'CASCADE',
+        public ?string $nameRelation = null,
+        public bool $orphanRemoval = false
+    ) {}
 } 
