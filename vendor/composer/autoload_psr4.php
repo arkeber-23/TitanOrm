@@ -12,5 +12,6 @@ return array(
     'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src/PhpOption'),
     'GrahamCampbell\\ResultType\\' => array($vendorDir . '/graham-campbell/result-type/src'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
+    'Cabez\\TitanOrm\\Kernel\\' => array($baseDir . '/kernel'),
     'Cabez\\TitanOrm\\' => array($baseDir . '/src'),
 );

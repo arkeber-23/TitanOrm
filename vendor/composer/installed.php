@@ -1,20 +1,20 @@
 <?php return array(
     'root' => array(
         'name' => 'cabez/titan-orm',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
-        'type' => 'project',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '34d2188e6300d39ae3a8765bcd6e4b0b056408a2',
+        'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
         'cabez/titan-orm' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
-            'type' => 'project',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '34d2188e6300d39ae3a8765bcd6e4b0b056408a2',
+            'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
@@ -22,7 +22,7 @@
         'graham-campbell/result-type' => array(
             'pretty_version' => '1.1.x-dev',
             'version' => '1.1.9999999.9999999-dev',
-            'reference' => 'fbd48bce38f73f8a4ec8583362e732e4095e5862',
+            'reference' => 'bdd52c41913b414f4ca7dcb34482babcd0e9bd58',
             'type' => 'library',
             'install_path' => __DIR__ . '/../graham-campbell/result-type',
             'aliases' => array(),
@@ -31,7 +31,7 @@
         'phpoption/phpoption' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '416ca2ac2a84555b785a98002d613fe13d1d1c2f',
+            'reference' => '638a154f8d4ee6a5cfa96d6a34dfbe0cffa9566d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpoption/phpoption',
             'aliases' => array(
@@ -42,7 +42,7 @@
         'symfony/polyfill-ctype' => array(
             'pretty_version' => '1.x-dev',
             'version' => '1.9999999.9999999.9999999-dev',
-            'reference' => '0424dff1c58f028c451efff2045f5d92410bd540',
+            'reference' => 'a3cc8b044a6ea513310cbd48ef7333b384945638',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
             'aliases' => array(),
@@ -51,7 +51,7 @@
         'symfony/polyfill-mbstring' => array(
             'pretty_version' => '1.x-dev',
             'version' => '1.9999999.9999999.9999999-dev',
-            'reference' => '8740a072b86292957feb42703edde77fcfca84fb',
+            'reference' => '6d857f4d76bd4b343eac26d6b539585d2bc56493',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-mbstring',
             'aliases' => array(),
@@ -60,7 +60,7 @@
         'symfony/polyfill-php80' => array(
             'pretty_version' => '1.x-dev',
             'version' => '1.9999999.9999999.9999999-dev',
-            'reference' => '77fa7995ac1b21ab60769b7323d600a991a90433',
+            'reference' => '0cc9dd0f17f61d8131e7df6b84bd344899fe2608',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php80',
             'aliases' => array(),
@@ -69,7 +69,7 @@
         'vlucas/phpdotenv' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '334f4952967f3ee6cdb2004e05e0bd01b525d56b',
+            'reference' => '24ac4c74f91ee2c193fa1aaa5c249cb0822809af',
             'type' => 'library',
             'install_path' => __DIR__ . '/../vlucas/phpdotenv',
             'aliases' => array(

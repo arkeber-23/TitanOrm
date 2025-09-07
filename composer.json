@@ -4,12 +4,16 @@
     "license": "mit",
     "autoload": {
         "psr-4": {
-            "Cabez\\TitanOrm\\": "src/"
+            "Cabez\\TitanOrm\\": "src/",
+            "Cabez\\TitanOrm\\Kernel\\": "kernel/"
         }
     },
     "authors": [
         {
-            "name": "Eber Cabezas"
+            "name": "Eber Cabezas",
+            "email": "cabezasever@gmail.com",
+            "role": "Developer",
+            "homepage": "https://github.com/arkeber-23"
         }
     ],
     "minimum-stability": "dev",

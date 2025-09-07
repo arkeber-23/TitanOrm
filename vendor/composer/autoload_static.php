@@ -33,6 +33,7 @@ class ComposerStaticInit2fa5a0b010ca154e5964f529f5aa8279
         ),
         'C' => 
         array (
+            'Cabez\\TitanOrm\\Kernel\\' => 22,
             'Cabez\\TitanOrm\\' => 15,
         ),
     );
@@ -61,6 +62,10 @@ class ComposerStaticInit2fa5a0b010ca154e5964f529f5aa8279
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
+        'Cabez\\TitanOrm\\Kernel\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/kernel',
         ),
         'Cabez\\TitanOrm\\' => 
         array (
